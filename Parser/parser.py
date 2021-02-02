@@ -17,7 +17,7 @@ def get_comments(query_hash, shortcode, pointer='', count=12):
             'accept-encoding': 'gzip, deflate, br',
             'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
             'cookie': 'ig_did=396C024E-E9B0-4156-A7C6-74883545AC1F; mid=X8yyRQAEAAFXZ17UTf5PFimVzm5o; ig_nrcb=1; shbid=2224; shbts=1612248235.9215565; rur=ATN; csrftoken=yclATnvQYVonM00FL341ekcTyJxBuqtz',
-            'referer': 'https://www.instagram.com/p/Bw2aCOJh4Ca/',
+            'referer': 'https://www.instagram.com/p/{0}/'.format(shortcode),
             'sec-ch-ua': '"Chromium";v="88", "Google Chrome";v="88", ";Not A Brand";v="99"',
             'sec-ch-ua-mobile': '?0',
             'sec-fetch-dest': 'empty',
@@ -107,7 +107,7 @@ def get_commented_users():
     while has_next:
         response = get_comments(
             'bc3296d1ce80a24b1b6e40b1e72903f5',
-            'Bw2aCOJh4Ca',
+            'BurVe2sF5RZ',
             pointer
             # 12
         )
