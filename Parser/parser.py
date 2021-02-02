@@ -46,7 +46,7 @@ def get_comments(query_hash, shortcode, pointer='', count=12):
 
 
 def get_commented_users():
-    users_id = []
+    usernames = []
     has_next = True
     pointer = ''
     while has_next:
@@ -58,10 +58,13 @@ def get_commented_users():
         )
         has_next = response['page_info']['has_next_page']
         if has_next:
-            pointer = response['next']
+            pointer = response['page_info']['end_cursor']
         comments = response['edges']
-        users_id += [comment['node']['owner']['username'] for comment in comments]
+        usernames += [comment['node']['owner']['username'] for comment in comments]
+    return usernames
 
 
 if __name__ == '__main__':
-    get_commented_users()
+    usernames = get_commented_users()
+    for username in usernames:
+        
