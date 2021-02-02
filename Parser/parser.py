@@ -5,7 +5,7 @@ import urllib.parse
 def get_comments(query_hash, shortcode, pointer='', count=12):
     response = requests.get(
         'https://www.instagram.com/graphql/query/?query_hash={0}&variables=%7B%22shortcode%22%3A%22{1}%22%2C%22first%22%3A{2}%2C%22after%22%3A%22{3}%22%7D'
-        .format(
+            .format(
             urllib.parse.quote(query_hash),
             urllib.parse.quote(shortcode),
             count,
@@ -45,13 +45,23 @@ def get_comments(query_hash, shortcode, pointer='', count=12):
     return data
 
 
+def get_commented_users():
+    users_id = []
+    has_next = True
+    pointer = ''
+    while has_next:
+        response = get_comments(
+            'bc3296d1ce80a24b1b6e40b1e72903f5',
+            'Bw2aCOJh4Ca',
+            pointer
+            # 12
+        )
+        has_next = response['page_info']['has_next_page']
+        if has_next:
+            pointer = response['next']
+        comments = response['edges']
+        users_id += [comment['node']['owner']['username'] for comment in comments]
+
+
 if __name__ == '__main__':
-    abl_query = 'query_hash=bc3296d1ce80a24b1b6e40b1e72903f5&variables=%7B%22shortcode%22%3A%22Bw2aCOJh4Ca%22%2C%22first%22%3A12%2C%22after%22%3A%22QVFDUTRXZ0ZHRHBZa0ZZUnBkcnRaMlJvQm1WQkFsZ0VuZUczLXJkLW81Z2lEN1JIcVQ4dzRrWlludllfZmg0RHlULXZFYVhSaTNxTTNLTWhYS2NncWRhVw%3D%3D%22%7D'
-    response = get_comments(
-        'bc3296d1ce80a24b1b6e40b1e72903f5',
-        'Bw2aCOJh4Ca',
-        # 'QVFCU3pKUkJuRlRuNVFrX2x1cGFaalhuWEVzb2xiU0FtazQya3RGcUtMR2JLclp3WEk0bm9qd2dkY2pfZEFOMGEzXzJZaFlwYl9BZkdfZ2tfcENMQ2ltSQ==',
-        # 12
-    )
-    print(response)
-    pass
+    get_commented_users()
