@@ -179,16 +179,13 @@ def get_liked_users_selenium(_driver, shortcode, pointer=""):
 
 
 def insert_users_to_csv(_users, _driver):
-    flag = True
     for username in _users:
-        if flag:
-            continue
         user_info = get_user_info_by_selenium(username, _driver)
-        with open('bots.csv', "r") as infile:
+        with open('real_accs.csv', "r") as infile:
             reader = list(csv.reader(infile))
             reader.insert(1, user_info)
 
-        with open('bots.csv', "w") as outfile:
+        with open('real_accs.csv', "w") as outfile:
             writer = csv.writer(outfile)
             for line in reader:
                 writer.writerow(line)
@@ -217,7 +214,7 @@ if __name__ == '__main__':
     #          'BfnlJGFhush', 'BezmnODhfTa', 'Bep2QzAhmjr', 'BdjzoYzBtUL',
     #          'BbEJV_EjM_G', 'BaszE7Wju5T', 'BajhUH6jEaV', 'BaWWolqDI_3',
     #          'BZ6M7R4j9jN', 'BZqiz8ajQDM', 'BYePhRgjvSB', 'BVazkxnDnUF']
-    posts = ['CIqPqRMBCIq']
+    posts = ['CKT7ZSFBO9g']
     for shortcode in posts:
         parse_post_liks(shortcode)
     print('Done')
