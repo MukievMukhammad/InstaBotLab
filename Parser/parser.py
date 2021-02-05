@@ -179,7 +179,10 @@ def get_liked_users_selenium(_driver, shortcode, pointer=""):
 
 
 def insert_users_to_csv(_users, _driver):
+    flag = True
     for username in _users:
+        if flag:
+            continue
         user_info = get_user_info_by_selenium(username, _driver)
         with open('bots.csv', "r") as infile:
             reader = list(csv.reader(infile))
@@ -191,16 +194,30 @@ def insert_users_to_csv(_users, _driver):
                 writer.writerow(line)
 
 
-if __name__ == '__main__':
+def parse_post_liks(shortcode):
     driver = init_selenium()
     users = []
     pointer = ''
     has_next = True
     while has_next:
-        urs, _next = get_liked_users_selenium(driver, 'Bw2aCOJh4Ca', pointer)
+        urs, _next = get_liked_users_selenium(driver, shortcode, pointer)
         users += urs
         has_next = _next['has_next_page']
         if has_next:
             pointer = _next['end_cursor']
     insert_users_to_csv(users, driver)
-    print()
+    print(shortcode, 'Success')
+
+
+if __name__ == '__main__':
+    # posts = ['BwyxUE0lvFA', 'BurVe2sF5RZ', 'Bt9MeNqlkjI', 'BtJgtdInrTg',
+    #          'BtHAwY3nVRf', 'BtEUKvZnrbv', 'BtB4Us-nhzI', 'Bs0rGR2nJGZ',
+    #          'BstLgVoH3xJ', 'BsoMIW5H7xD', 'BsllsPnHKN6', 'BsgbXz3H0j7',
+    #          'BsVU3FYHP00', 'BsNv9dBHDpn', 'Bp_xjdBFsL4', 'BgDpZV7Ae90',
+    #          'BfnlJGFhush', 'BezmnODhfTa', 'Bep2QzAhmjr', 'BdjzoYzBtUL',
+    #          'BbEJV_EjM_G', 'BaszE7Wju5T', 'BajhUH6jEaV', 'BaWWolqDI_3',
+    #          'BZ6M7R4j9jN', 'BZqiz8ajQDM', 'BYePhRgjvSB', 'BVazkxnDnUF']
+    posts = ['CIqPqRMBCIq']
+    for shortcode in posts:
+        parse_post_liks(shortcode)
+    print('Done')
