@@ -163,8 +163,20 @@ def get_commented_users(post_code):
     return usernames
 
 
-def insert_users_to_csv(users):
-    driver = init_selenium()
+def get_liked_users_selenium(driver, shortcode, pointer=""):
+    url = "https://www.instagram.com/graphql/query/?"\
+        "query_hash=d5d763b1e2acf209d62d22d184488e57&"\
+        "variables=%7B%22"\
+        "shortcode%22%3A%22{0}%22%2C%22"\
+        "include_reel%22%3Atrue%2C%22"\
+        "first%22%3A100%2C%22"\
+        "after%22%3A%22{1}%22%7D".format(shortcode, pointer)
+    driver.get(url)
+    data = json.loads(driver.find_element(By.CSS_SELECTOR, "pre").text)
+    print()
+
+
+def insert_users_to_csv(users, driver):
     for username in users:
         user_info = get_user_info_by_selenium(username, driver)
         with open('bots.csv', "r") as infile:
@@ -178,6 +190,7 @@ def insert_users_to_csv(users):
 
 
 if __name__ == '__main__':
-    users = get_commented_users('Bt9MeNqlkjI')
-    insert_users_to_csv(users)
+    driver = init_selenium()
+    users = get_liked_users_selenium(driver, 'Bw2aCOJh4Ca', '')
+    # insert_users_to_csv(users, driver)
     print()
