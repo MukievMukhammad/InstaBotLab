@@ -110,7 +110,7 @@ def get_user_info(username):
 def get_user_info_by_selenium(username, driver):
     driver.get("https://www.instagram.com/{0}/?__a=1".format(username))
     data = json.loads(driver.find_element(By.CSS_SELECTOR, "pre").text)['graphql']['user']
-    time.sleep(1)
+    # time.sleep(1)
 
     result = [
         str(data['biography']),
@@ -134,13 +134,13 @@ def get_user_info_by_selenium(username, driver):
 def init_selenium():
     driver = webdriver.Chrome('/Users/user/Downloads/chromedriver')
     driver.get("https://www.instagram.com/accounts/login/")
-    time.sleep(2)
+    time.sleep(1)
     driver.find_element(By.NAME, "username").click()
     driver.find_element(By.NAME, "username").send_keys("mansion_style")
     driver.find_element(By.NAME, "password").click()
     driver.find_element(By.NAME, "password").send_keys("A12QweR45")
     driver.find_element(By.NAME, "password").send_keys(Keys.ENTER)
-    time.sleep(5)
+    time.sleep(4)
     return driver
 
 
@@ -163,22 +163,24 @@ def get_commented_users(post_code):
     return usernames
 
 
-def get_liked_users_selenium(driver, shortcode, pointer=""):
-    url = "https://www.instagram.com/graphql/query/?"\
-        "query_hash=d5d763b1e2acf209d62d22d184488e57&"\
-        "variables=%7B%22"\
-        "shortcode%22%3A%22{0}%22%2C%22"\
-        "include_reel%22%3Atrue%2C%22"\
-        "first%22%3A100%2C%22"\
-        "after%22%3A%22{1}%22%7D".format(shortcode, pointer)
-    driver.get(url)
-    data = json.loads(driver.find_element(By.CSS_SELECTOR, "pre").text)
-    print()
+def get_liked_users_selenium(_driver, shortcode, pointer=""):
+    url = "https://www.instagram.com/graphql/query/?" \
+          "query_hash=d5d763b1e2acf209d62d22d184488e57&" \
+          "variables=%7B%22" \
+          "shortcode%22%3A%22{0}%22%2C%22" \
+          "include_reel%22%3Atrue%2C%22" \
+          "first%22%3A100%2C%22" \
+          "after%22%3A%22{1}%22%7D".format(shortcode, pointer)
+    _driver.get(url)
+    data = json.loads(_driver.find_element(By.CSS_SELECTOR, "pre").text)['data']['shortcode_media']['edge_liked_by']
+    _next = data['page_info']
+    _users = [user['node']['username'] for user in data['edges']]
+    return _users, _next
 
 
-def insert_users_to_csv(users, driver):
-    for username in users:
-        user_info = get_user_info_by_selenium(username, driver)
+def insert_users_to_csv(_users, _driver):
+    for username in _users:
+        user_info = get_user_info_by_selenium(username, _driver)
         with open('bots.csv', "r") as infile:
             reader = list(csv.reader(infile))
             reader.insert(1, user_info)
@@ -191,6 +193,14 @@ def insert_users_to_csv(users, driver):
 
 if __name__ == '__main__':
     driver = init_selenium()
-    users = get_liked_users_selenium(driver, 'Bw2aCOJh4Ca', '')
-    # insert_users_to_csv(users, driver)
+    users = []
+    pointer = ''
+    has_next = True
+    while has_next:
+        urs, _next = get_liked_users_selenium(driver, 'Bw2aCOJh4Ca', pointer)
+        users += urs
+        has_next = _next['has_next_page']
+        if has_next:
+            pointer = _next['end_cursor']
+    insert_users_to_csv(users, driver)
     print()
