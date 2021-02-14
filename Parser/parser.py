@@ -129,9 +129,9 @@ def init_selenium():
     driver.get("https://www.instagram.com/accounts/login/")
     time.sleep(1)
     driver.find_element(By.NAME, "username").click()
-    driver.find_element(By.NAME, "username").send_keys("mansion_style")
+    driver.find_element(By.NAME, "username").send_keys("username")
     driver.find_element(By.NAME, "password").click()
-    driver.find_element(By.NAME, "password").send_keys("A12QweR45")
+    driver.find_element(By.NAME, "password").send_keys("password")
     driver.find_element(By.NAME, "password").send_keys(Keys.ENTER)
     time.sleep(4)
     return driver
